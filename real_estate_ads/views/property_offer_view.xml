@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+
+    <record id="estate_property_offer_tree_view" model="ir.ui.view">
+        <field name="name">estate.property.offer.tree</field>
+        <field name="model">estate.property.offer</field>
+        <field name="arch" type="xml">
+            <tree decoration-succes="status == 'accepted'" decoration-danger="status == 'refused'">
+                <field name="price"/>
+                <field name="status"/>
+                <field name="partner_id"/>
+                <field name="property_id"/>
+                <field name="creation_date"/>
+                <field name="validity"/>
+                <field name="deadline"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="estate_property_offer_form_view" model="ir.ui.view">
+        <field name="name">estate.property.offer.form</field>
+        <field name="model">estate.property.offer</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                <button name="action_sold" type="object" string="Sold" class="btn btn-primary"/>
+                <button name="action_cancel" type="object" string="Cancel" class="btn btn-danger"/>
+                <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" name="action_property_views_offers" type="object" icon="fa-handshake">
+                            <field name="offer_count" string="Offers" widget="statinfo"/>
+                        </button>
+                    </div>
+                    <group>
+                        <field name="name"/>
+                        <field name="tags_ids" widget="many2many_tags" option="{'color_field': 'color'}"/>
+                        <group>
+                            <field name="type_id"/>
+                            <field name="postcode"/>
+                            <field name="date_availabilty"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+            <search>
+                <field name="name"/>
+                <field name="type_id"/>
+                <field name="postcode"/>
+                <field name="date_availability"/>
+                <field name="expected_price"/>
+                <field name="best_offer"/>
+                <field name="selling_price"/>
+                <!-- ca marche pas (28) -->
+                <filter string="New" name="new_state" domain="[('state', '=', 'new')]"/>
+                <filter string="Sold" name="sold_state" domain="[('state', '=', 'sold')]"/>
+                <filter string="Received offer" name="received_state" domain="[('state', '=', 'received')]"/>
+                <filter string="Accepted offer" name="accepted_state" domain="[('state', '=', 'new')]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter string="Status" name="group_by_state" context="{'group_by': 'sate'}"/>
+                </group>
+                <searchpanel>
+                    <field name="state" icon="fa-filter" groupby="group_by_state" limit="0"/>
+                </searchpanel>
+            </search>
+        </field>
+    </record> 
+
+    <record id="estate_property_calendar_view" model="ir.ui.view">
+        <field name="name">estate.property.calendar</field>
+        <field name="model">estate.property</field>
+        <field name="arch" type="xml">
+            <calendar date_start="date_availability" string="Properties" mode="month" event_open_popup="true" quick_add="false">
+                <field name="name"/>
+                <field name="date_availability"/>
+                <field name="postcode"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="action_property_offer" model="ir.actions.act_window">
+        <field name="name">Property offer</field>
+        <field name="res_model">estate.property.offer</field>
+        <field name="view_mode">calendar,tree,form</field>
+        <field name="view_id" ref="estate_property_offer_tree_view"/>
+    </record>
+
+    </data>
+</odoo>
